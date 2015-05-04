@@ -10,8 +10,8 @@ import fiap.sd.udp.simplechatudp.util.Console;
 public class RunReceiver {
 	
 	public boolean receberConexao(){
-		int port = 4545;
-//		String addr = "127.0.0.1";
+		int port = 3321;
+		String addr = "127.0.0.1";
 		Receiver rec = new Receiver(port);
 		boolean ret = rec.runConfirmacao();
 		return ret;

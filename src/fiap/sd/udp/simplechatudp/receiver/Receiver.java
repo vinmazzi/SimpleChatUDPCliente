@@ -14,12 +14,18 @@ public class Receiver {
 	
 	// PARA PESQUISAR: Qual o tamanho maximo do buffer?
 	private static int BUFSIZE = 4096;
+
 	private DatagramSocket listenSocket;
+	
+	
+	public DatagramSocket getListenSocket() {
+		return listenSocket;
+	}
+
 	
 	public Receiver(int port) {
 		try {
 			listenSocket = new DatagramSocket(port);
-			System.out.println("** Ouvindo mensagens em "+listenSocket.getLocalSocketAddress());
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(-1);
@@ -32,12 +38,18 @@ public class Receiver {
 		while(listenSocket!=null) {
 			try {
 				Arrays.fill(buffer, (byte) ' ');
-				DatagramPacket packet = new DatagramPacket(buffer,BUFSIZE);
+				DatagramPacket packet = null;
+				packet = new DatagramPacket(buffer,BUFSIZE);
 				listenSocket.receive(packet);
+				String splitter = "%%%Cod3%%%";
 				String data = new String(packet.getData()).trim();
-				if(data == "Connect123456CodeConnection-Closed"){
+				if(data.equals("Connect123456CodeConnection-Closed"+splitter)){
+					//System.out.println("Retornou true no runConfirmaçao!!!!!");
 					ret = true;
+					listenSocket = null;
 				}else{
+					System.out.println("Retornou False no runConfirmaçao");
+					System.out.println("Dados: " + data);
 					ret = false;
 				}
 				Thread.yield();
@@ -47,6 +59,23 @@ public class Receiver {
 				}
 		}
 		return ret;
+	}
+
+
+
+	public String runServer() {
+		byte[] buffer = new byte[BUFSIZE];
+		String msg = null;
+		try {
+			Arrays.fill(buffer, (byte) ' ');
+			DatagramPacket packet = new DatagramPacket(buffer,BUFSIZE);
+			listenSocket.receive(packet);
+			msg = new String(packet.getData());
+			Thread.yield();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return msg;
 	}
 
 	

@@ -16,11 +16,21 @@ import fiap.sd.udp.simplechatudp.receiver.RunReceiver;
  *
  */
 public class Sender {
-	private DatagramSocket speakSocket;
 	private InetAddress destAddress;
+	static String splitter = "%%%Cod3%%%";
 	private int destPort;
 	private static final BufferedReader console = new BufferedReader(new InputStreamReader(
 			System.in));
+	private DatagramSocket speakSocket;
+	
+	public void setSpeakSocket(DatagramSocket sSocket){
+		
+		this.speakSocket = sSocket;
+	}
+
+	public DatagramSocket getSpeakSocket() {
+		return speakSocket;
+	}
 
 	public Sender(String destAddr, int destPort) {
 		try {
@@ -35,25 +45,36 @@ public class Sender {
 		}
 	}
 
-	
-	public boolean fecharConexao(){
-		String message = "Connect123456CodeConnection";
-		RunReceiver rRec = new RunReceiver();
-		sendMessage(message);
-		boolean conexao = rRec.receberConexao();
-		if(!conexao){
-			System.out.println("Aguardando conexão com o servidor....");
-		}else{
-			System.out.println("Conexão Fechada!");
+	public void runServer(String title, String code) {
+		String message = null;
+		String read = null;
+		String splitterCode = null;
+		try {
+			switch(code){
+				case "1234UsernameQuest4321":
+					splitterCode = "1234UsernameAsw4321" + splitter;
+					break;
+				case "1234MenuSelect4321":
+					splitterCode = "1234MenuSelectAsw4321" + splitter;
+					break;
+			
+			}
+			read = readMessage(title);
+			message = splitterCode + read;
+		} catch (IOException e) {
+			System.out.println("Erro na entrada do teclado.");
+			e.printStackTrace();
+			System.exit(-1);
 		}
-		return conexao;
+		sendMessage(message);
 	}
 	
 	public void run() {
 		String message = null;
 		while (speakSocket != null) {
 			try {
-				message = readMessage();
+				
+				message = readMessage("default");
 			} catch (IOException e) {
 				System.out.println("Erro na entrada do teclado.");
 				e.printStackTrace();
@@ -63,12 +84,17 @@ public class Sender {
 		}
 	}
 
-	private String readMessage() throws IOException {
-		System.out.print("Mensagem a ser enviada > ");
+	private String readMessage(String title) throws IOException {
+		if(title.equals("default")){
+			System.out.print("\nMensagem a ser enviada > ");
+		}else{
+			
+			System.out.print("\n" + title + " > ");
+		}
 		return console.readLine();
 	}
 
-	private void sendMessage(String command) {
+	public void sendMessage(String command) {
 		DatagramPacket packet = new DatagramPacket(command.getBytes(),
 				command.length(), this.destAddress, this.destPort);
 		try {
