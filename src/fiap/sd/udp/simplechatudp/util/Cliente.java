@@ -47,6 +47,15 @@ public class Cliente {
 				case "1234MenuSelect4321":
 					System.out.println(data);
 					send.runServer("Escolha uma opção", code);
+					break;
+				case "1234SalaIndisponivel4321":
+					System.out.println(data);
+					send.runServer("Criar uma nova sala ( S: sim | N: não ): ", code);
+					break;
+				case "1234CriaNovaSalaNome4321":
+					System.out.println(data);
+					send.runServer("Informe o nome para a nova sala", code);
+					break;
 				default:
 					break;
 			

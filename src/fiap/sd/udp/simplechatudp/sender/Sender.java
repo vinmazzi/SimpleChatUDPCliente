@@ -57,7 +57,13 @@ public class Sender {
 				case "1234MenuSelect4321":
 					splitterCode = "1234MenuSelectAsw4321" + splitter;
 					break;
-			
+				case "1234SalaIndisponivel4321":
+					splitterCode = "1234SalaIndisponivelAsw4321" + splitter;
+					break;
+				case "1234CriaNovaSalaNome4321":
+					splitterCode = "1234CriaNovaSalaNomeAsw4321" + splitter;
+					break;
+					
 			}
 			read = readMessage(title);
 			message = splitterCode + read;
