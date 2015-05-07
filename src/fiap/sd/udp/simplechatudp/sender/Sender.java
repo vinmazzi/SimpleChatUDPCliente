@@ -7,6 +7,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import fiap.sd.udp.simplachatudp.beans.ClienteLocal;
+import fiap.sd.udp.simplachatudp.beans.Sala;
+import fiap.sd.udp.simplachatudp.beans.Servidor;
+import fiap.sd.udp.simplachatudp.beans.Usuario;
 import fiap.sd.udp.simplechatudp.receiver.Receiver;
 import fiap.sd.udp.simplechatudp.receiver.RunReceiver;
 
@@ -19,9 +23,9 @@ public class Sender {
 	private InetAddress destAddress;
 	static String splitter = "%%%Cod3%%%";
 	private int destPort;
-	private static final BufferedReader console = new BufferedReader(new InputStreamReader(
-			System.in));
+	private static final BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 	private DatagramSocket speakSocket;
+	ClienteLocal cL;
 	
 	public void setSpeakSocket(DatagramSocket sSocket){
 		
@@ -32,11 +36,13 @@ public class Sender {
 		return speakSocket;
 	}
 
-	public Sender(String destAddr, int destPort) {
+	public Sender(ClienteLocal clienteLocal) {
 		try {
+			this.cL = clienteLocal;
 			this.speakSocket = new DatagramSocket();
-			this.destAddress = InetAddress.getByName(destAddr);
-			this.destPort = destPort;
+			Servidor server = clienteLocal.getServidor();
+			this.destAddress = InetAddress.getByName(server.getIp());
+			this.destPort = server.getPort();
 			System.out.println("** Preparando para enviar mensagens para "
 					+ this.destAddress + ":" + this.destPort);
 		} catch (IOException e) {
@@ -52,20 +58,38 @@ public class Sender {
 		try {
 			switch(code){
 				case "1234UsernameQuest4321":
+					read = readMessage(title);
 					splitterCode = "1234UsernameAsw4321" + splitter;
+					Usuario user = new Usuario();
+					user.setNickName(read);
+					cL.setUsuario(user);
 					break;
 				case "1234MenuSelect4321":
+					read = readMessage(title);
 					splitterCode = "1234MenuSelectAsw4321" + splitter;
 					break;
 				case "1234SalaIndisponivel4321":
+					read = readMessage(title);
 					splitterCode = "1234SalaIndisponivelAsw4321" + splitter;
 					break;
 				case "1234CriaNovaSalaNome4321":
+					read = readMessage(title);
+					Sala sala = new Sala();
+					sala.setNome(read);
+					cL.setSala(sala);
 					splitterCode = "1234CriaNovaSalaNomeAsw4321" + splitter;
+					break;
+				case "1234InSala4321":
+					Sala s;
+					Usuario u;
+					s = cL.getSala();
+					u = cL.getUsuario();
+					title = s.getNome();
+					read = readMessage(title);
+					splitterCode = "1234InSalaAsw4321" + splitter + "5678Sala8765" + splitter + s.getNome() + splitter + u.getNickName() + splitter;
 					break;
 					
 			}
-			read = readMessage(title);
 			message = splitterCode + read;
 		} catch (IOException e) {
 			System.out.println("Erro na entrada do teclado.");
@@ -95,7 +119,7 @@ public class Sender {
 			System.out.print("\nMensagem a ser enviada > ");
 		}else{
 			
-			System.out.print("\n" + title + " > ");
+			System.out.print("\n" + title.trim() + " > ");
 		}
 		return console.readLine();
 	}
