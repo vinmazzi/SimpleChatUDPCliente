@@ -26,13 +26,15 @@ public class Sender {
 	private static final BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 	private DatagramSocket speakSocket;
 	ClienteLocal cL;
+	Thread thread;
 	
 	public void setSpeakSocket(DatagramSocket sSocket){
-		
+
 		this.speakSocket = sSocket;
 	}
 
 	public DatagramSocket getSpeakSocket() {
+
 		return speakSocket;
 	}
 
@@ -114,7 +116,7 @@ public class Sender {
 		}
 	}
 
-	private String readMessage(String title) throws IOException {
+	public String readMessage(String title) throws IOException {
 		if(title.equals("default")){
 			System.out.print("\nMensagem a ser enviada > ");
 		}else{
