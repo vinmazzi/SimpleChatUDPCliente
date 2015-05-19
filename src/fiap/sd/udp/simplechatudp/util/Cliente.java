@@ -1,5 +1,6 @@
 package fiap.sd.udp.simplechatudp.util;
 
+import java.io.IOException;
 import java.net.DatagramSocket;
 
 import fiap.sd.udp.simplachatudp.beans.Servidor;
@@ -10,28 +11,28 @@ import fiap.sd.udp.simplachatudp.beans.ClienteLocal;
 
 
 public class Cliente {
-	
+
 	static String splitter = "%%%Cod3%%%";
 
-	
-	public static boolean fecharConexao(ClienteLocal cL){
-		String message = "Connect123456CodeConnection"+splitter;
+
+	public static boolean fecharConexao(ClienteLocal cL) {
+		String message = "Connect123456CodeConnection" + splitter;
 		RunReceiver rRec = new RunReceiver();
 		Sender send = new Sender(cL);
 		send.sendMessage(message);
 		boolean conexao = rRec.receberConexao();
 		System.out.println("Estou no receber conexao");
 
-		if(!conexao){
+		if (!conexao) {
 			System.out.println("Aguardando conexão com o servidor....");
-		}else{
+		} else {
 			System.out.println("Conexão Fechada!");
 			send.setSpeakSocket(null);
 		}
 		return conexao;
 	}
-	
-	public static void rodarServer(int lPort, ClienteLocal cL, Console c){
+
+	public static void rodarServer(int lPort, ClienteLocal cL, Console c) {
 		Receiver rc = new Receiver(lPort);
 		Sender send = new Sender(cL);
 		DatagramSocket dS;
@@ -40,7 +41,7 @@ public class Cliente {
 		boolean threadStatusListen = false;
 		boolean threadStatusSend = false;
 
-		while(dS != null){
+		while (dS != null) {
 			String msg = rc.runServer();
 			String tmp[] = msg.split(splitter);
 			String code = tmp[0];
@@ -48,17 +49,15 @@ public class Cliente {
 			String sala = null;
 			String usuario = null;
 			Thread thread = null;
-			final String dataInThread = data;
-			final String usuarioInThread = usuario;
-			if(tmp.length > 1){
-				if(code.equals("1234InSalaMsg4321")){
+			if (tmp.length > 1) {
+				if (code.equals("1234InSalaMsg4321")) {
 					data = tmp[2];
 					usuario = tmp[1];
-				}else{
+				} else {
 					data = tmp[1];
 				}
 			}
-			switch(code){
+			switch (code) {
 				case "1234UsernameQuest4321":
 					send.runServer("Informe seu usuário", code);
 					break;
@@ -84,48 +83,48 @@ public class Cliente {
 					System.out.println(data);
 					break;
 				case "1234FimListaDeSalas":
-					send.runServer("Informe o nome da sala para entrar ",code);
+					send.runServer("Informe o nome da sala para entrar ", code);
 					break;
-/*				case "1234InSala4321":
-					send.runServer(data, code);
-					break;*/
+				case "1234InSalaMsg4321":
+					System.out.print(cL.getUsuario().getNickName() + " > " + data.trim());
+					try {
+						String messageTmp = send.readMessage(cL.getSala().getNome());
+						String message = "1234InSalaAsw4321" + splitter + "5678Sala8765" + splitter + cL.getSala().getNome() + splitter + cL.getUsuario().getNickName() + splitter + messageTmp;
+						send.sendMessage(message);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					break;
 				case "1234InSala4321":
-					if(!threadStatusListen){
+					boolean on = true;
+					//while (on) {
+						try {
+							String messageTmp = send.readMessage(cL.getSala().getNome());
+							String message = "1234InSalaAsw4321" + splitter + "5678Sala8765" + splitter + cL.getSala().getNome() + splitter + cL.getUsuario().getNickName() + splitter + messageTmp;
+							send.sendMessage(message);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 
-							threadStatusListen = true;
-							(new CreateThreadListen(console, dS)).start();
-	//						thread = new Thread(){
-	//
-	//							@Override
-	//							public void run(){
-	//								boolean s = dataInThread.isEmpty();
-	//								System.out.println("Este é o valor de s: " + s);
-	//								console.print("To na thread");
-	//								while(true){
-	//									console.println(usuarioInThread + "diz > " + dataInThread);
-	//									if(dataInThread != null){
-	//										if(!dataInThread.isEmpty())
-	//										console.println(usuarioInThread + "diz > " + dataInThread);
-	//									}
-	//								}
-	//							}
-	//						};
-	//						thread.start();
-
-					}
-					if(!threadStatusSend){
-						threadStatusSend = true;
-						(new CreateThreadSend(cL)).start();
-					}
-					dS = null;
+					//}
 					break;
-				
+
 				default:
-				break;
-			
+					try {
+						String messageTmp = send.readMessage(cL.getSala().getNome());
+						String message = "1234InSalaAsw4321" + splitter + "5678Sala8765" + splitter + cL.getSala().getNome() + splitter + cL.getUsuario().getNickName() + splitter + messageTmp;
+						send.sendMessage(message);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					break;
+
 			}
-		}	
+			code = "1234InSala4321";
+		}
+		System.out.println(dS);
 	}
+
 	public static void main(String args[]){
 		ClienteLocal cL = new ClienteLocal();
 		Console console = Console.getConsole();
