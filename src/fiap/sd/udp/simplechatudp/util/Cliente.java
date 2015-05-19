@@ -20,6 +20,8 @@ public class Cliente {
 		Sender send = new Sender(cL);
 		send.sendMessage(message);
 		boolean conexao = rRec.receberConexao();
+		System.out.println("Estou no receber conexao");
+
 		if(!conexao){
 			System.out.println("Aguardando conexão com o servidor....");
 		}else{
@@ -58,7 +60,6 @@ public class Cliente {
 			}
 			switch(code){
 				case "1234UsernameQuest4321":
-					console.print("dahora");
 					send.runServer("Informe seu usuário", code);
 					break;
 				case "1234MenuSelect4321":
@@ -67,14 +68,23 @@ public class Cliente {
 					break;
 				case "1234SalaIndisponivel4321":
 					System.out.println(data);
-					send.runServer("Criar uma nova sala ( S: sim | N: não ): ", code);
+					send.runServer("Criar uma nova sala ( S: sim | N: não ) ", code);
 					break;
 				case "1234CriaNovaSalaNome4321":
 					System.out.println(data);
 					send.runServer("Informe o nome para a nova sala", code);
 					break;
 				case "1234Message4321":
+					console.println(data);
+					break;
+				case "1234InicioListaSalas4321":
+					console.println("Essas são as salas disponiveis: ");
+					break;
+				case "1234Sala4321":
 					System.out.println(data);
+					break;
+				case "1234FimListaDeSalas":
+					send.runServer("Informe o nome da sala para entrar ",code);
 					break;
 /*				case "1234InSala4321":
 					send.runServer(data, code);
@@ -101,13 +111,11 @@ public class Cliente {
 	//							}
 	//						};
 	//						thread.start();
-						System.out.println("Acabei de iniciar a thread de listen");
 
 					}
 					if(!threadStatusSend){
 						threadStatusSend = true;
 						(new CreateThreadSend(cL)).start();
-						System.out.println("Acabei de iniciar uma thread de send");
 					}
 					dS = null;
 					break;

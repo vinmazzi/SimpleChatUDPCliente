@@ -62,7 +62,6 @@ public class CreateThreadListen extends Thread{
 				
 		String user = null;
 		String msgem = null;
-		byte[] buffer = new byte[5000];
 		String splitter = "%%%Cod3%%%";
 		String[] tmp = null;
 		String msg = null;
@@ -73,7 +72,7 @@ public class CreateThreadListen extends Thread{
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			c.println("Começando o while!!!!!");
+			byte[] buffer = new byte[5000];
 			DatagramPacket packet = new DatagramPacket(buffer,5000);
 			try {
 				ds.receive(packet);
@@ -81,14 +80,13 @@ public class CreateThreadListen extends Thread{
 				tmp = data.split(splitter);
 				msg = tmp[2];
 				user = tmp[1];
-				System.out.println("Vou verificar se está vazio");
 				if(!msg.isEmpty())
-					System.out.println("Não tá vazio!!! Vou printar");
 					c.println("\n\n" + user + " diz > " + msg);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			c.println("Saindo do while!");
+			buffer = null;
+			packet = null;
 		}
 		
 	}

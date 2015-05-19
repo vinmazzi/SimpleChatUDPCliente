@@ -44,7 +44,7 @@ public class Receiver {
 				String splitter = "%%%Cod3%%%";
 				String data = new String(packet.getData()).trim();
 				if(data.equals("Connect123456CodeConnection-Closed"+splitter)){
-					//System.out.println("Retornou true no runConfirmaçao!!!!!");
+					System.out.println("Retornou true no runConfirmaçao!!!!!");
 					ret = true;
 					listenSocket = null;
 				}else{
