@@ -46,6 +46,7 @@ public class Receiver {
 				if(data.equals("Connect123456CodeConnection-Closed"+splitter)){
 					System.out.println("Retornou true no runConfirmaçao!!!!!");
 					ret = true;
+					listenSocket.close();
 					listenSocket = null;
 				}else{
 					System.out.println("Retornou False no runConfirmaçao");

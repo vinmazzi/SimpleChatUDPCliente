@@ -110,13 +110,7 @@ public class Cliente {
 					break;
 
 				default:
-					try {
-						String messageTmp = send.readMessage(cL.getSala().getNome());
-						String message = "1234InSalaAsw4321" + splitter + "5678Sala8765" + splitter + cL.getSala().getNome() + splitter + cL.getUsuario().getNickName() + splitter + messageTmp;
-						send.sendMessage(message);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+
 					break;
 
 			}
